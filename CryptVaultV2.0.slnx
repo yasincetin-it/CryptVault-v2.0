@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CryptVaultV2.0.vcxproj" Id="a35863ec-5158-4d44-af79-ed58fed91906" />
+</Solution>
