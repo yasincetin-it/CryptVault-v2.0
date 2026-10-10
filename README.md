@@ -1,177 +1,87 @@
-# 🔐 CryptVault v2.0
+# CryptVault v2.0 🔒
 
-![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
-![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Security](https://img.shields.io/badge/Encryption-AES--256--GCM-red.svg)
+![Language](https://img.shields.io/badge/Language-C%2B%2B20-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows%20(CNG)-0078D6.svg)
+![Algorithm](https://img.shields.io/badge/Cipher-AES--256--GCM-green.svg)
+![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)
 
-CryptVault v2.0 is an educational password-based encryption and decryption tool written in C++ for Windows. It uses AES-256-GCM for authenticated encryption and PBKDF2-HMAC-SHA256 to derive a key from a user password.
-
-This project is intended for learning, experimentation, and understanding the fundamentals of authenticated encryption, key derivation, and secure message handling in C++.
-
-> Note: This repository currently focuses on encrypting and decrypting text messages. File encryption support is a planned future enhancement.
+**CryptVault v2.0** is a lightweight, high-performance, command-line text encryption and decryption tool engineered in C++20 for Windows environments. It leverages native Windows Cryptography API: Next Generation (**CNG / BCrypt**) to provide hardware-accelerated **AES-256-GCM** authenticated encryption for absolute confidentiality and data integrity.
 
 ---
 
-## ✨ Features
+## 🌟 Key Features
 
-- AES-256-GCM authenticated encryption
-- Password-based key derivation using PBKDF2-HMAC-SHA256
-- Unique random salt and nonce generated per encryption
-- Auth tag validation for tamper detection
-- Hex-encoded encrypted output
-- Simple Windows CLI workflow
-- Educational and prototype-oriented design
+- **AES-256-GCM Encryption:** Ensures strong data confidentiality along with built-in message integrity checking (Authenticated Encryption).
+- **PBKDF2 Key Derivation:** Uses PBKDF2 with 100,000 iterations and a uniquely generated 16-byte salt to derive strong 256-bit cryptographic keys from user passwords.
+- **Native Windows API:** Utilizes Windows CNG (`bcrypt.dll`) directly without external third-party library dependencies.
+- **Randomized Nonce/Salt:** Generates high-entropy Cryptographic Random Numbers (RNG) for IV and Salt per encryption operation.
+- **Zero Third-Party Dependencies:** Pure C++ implementation optimized for standard Windows platforms.
 
 ---
 
-## 🔐 Cryptographic Architecture
+## 🏗️ Technical Architecture & Format
 
-| Component | Specification |
-| :--- | :--- |
-| Cipher | AES |
-| Mode | GCM (Galois/Counter Mode) |
-| Key Size | 256 bits |
-| Authentication Tag | 128 bits |
-| KDF | PBKDF2-HMAC-SHA256 |
-| Iterations | 600,000 |
-| Salt Size | 16 bytes |
-| Nonce / IV Size | 12 bytes |
+When text is encrypted, CryptVault produces an output binary/hex structure formatted as follows:
 
-This design follows the standard pattern for authenticated encryption:
-- Password -> PBKDF2 -> encryption key
-- Random salt + random nonce
-- AES-GCM encryption
-- Authentication tag verification during decryption
+| Offset / Field | Size | Description |
+| :--- | :--- | :--- |
+| **Salt Size** | `uint32_t` (4 bytes) | Length of PBKDF2 Salt |
+| **Salt Data** | Variable (16 bytes) | Cryptographic Salt for Key Derivation |
+| **IV Size** | `uint32_t` (4 bytes) | Length of Initialization Vector / Nonce |
+| **IV Data** | Variable (12 bytes) | GCM Initialization Vector |
+| **Tag Size** | `uint32_t` (4 bytes) | Authentication Tag Length |
+| **Tag Data** | Variable (16 bytes) | GCM Authentication Tag for integrity check |
+| **Cipher Size** | `uint32_t` (4 bytes) | Length of Encrypted Content |
+| **Ciphertext** | Variable | Authenticated Encrypted Payload Data |
 
 ---
 
-## 🧠 Current Scope
-
-This project currently demonstrates how to:
-- encrypt a text message
-- derive a key from a password
-- generate a random salt and nonce
-- authenticate data using GCM tag verification
-- decrypt the message only if the password is correct
-
-It is a learning-focused implementation and should not be treated as a production-grade secure vault or enterprise encryption system.
-
----
-
-## 🛠️ Requirements
+## 🚀 Getting Started
 
 ### Prerequisites
-- Windows 10 / 11
-- Visual Studio 2022 or newer
-- C++20-capable compiler
-- OpenSSL development libraries
 
-### Required Libraries
-- OpenSSL `libcrypto`
-- `openssl/evp.h`
-- `openssl/rand.h`
-- `openssl/crypto.h`
+- **OS:** Windows 10 / 11
+- **Compiler:** MSVC (Visual Studio 2022 recommended) supporting **C++20**
+- **Libraries:** Windows SDK (`bcrypt.lib`)
 
----
-
-## 🚀 Building
+### Building the Project
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yasincetin-it/CryptVault-v2.0.git
-   cd CryptVault-v2.0
-   ```
-
-2. Open the Visual Studio solution/project:
-   - `CryptVaultV2.0.slnx`
-   - or the generated Visual Studio project file
-
-3. Make sure OpenSSL is installed and configured correctly for the project.
-
-4. Build the solution in Debug or Release mode.
+   `git clone [https://github.com/yasincetin-it/CryptVault-v2.0.git](https://github.com/yasincetin-it/CryptVault-v2.0.git)`
+   `cd CryptVault-v2.0`
+2. Open `CryptVaultV2.0.sln` in **Visual Studio**.
+3. Set configuration to `Release` and architecture to `x64`.
+4. Build the solution (`Ctrl + Shift + B`).
 
 ---
 
-## ▶️ Usage
+## 💻 Usage
 
-Run the executable and choose one of the available options:
+CryptVault is operated directly via Command Prompt (`cmd.exe`) or PowerShell.
 
-### 1. Encrypt Message
-- Enter the message to encrypt
-- Enter a password
-- The program outputs a hex-encoded encrypted message
+### Encrypting Text
+Command: `CryptVaultV2.0.exe encrypt <text> <password>`
 
-### 2. Decrypt Message
-- Paste the encrypted hex output
-- Enter the same password
-- If correct, the original message is recovered
+*Example:*
+`CryptVaultV2.0.exe encrypt "GizliMetin123" "MySecretPassword123"`
 
-Example flow:
-```text
-[1] Encrypt Message
-[2] Decrypt Message
-Your choice: 1
+### Decrypting Text
+Command: `CryptVaultV2.0.exe decrypt <encrypted_data> <password>`
 
-[?] Enter message to encrypt:
-Hello world
+*Example:*
+`CryptVaultV2.0.exe decrypt "<encrypted_string>" "MySecretPassword123"`
 
-[?] Enter a strong password:
-MySecurePass123!
-
-[+] AES-256-GCM encryption successful!
-Encrypted Hex message:
-...
-```
+> Restores original text upon password validation.
 
 ---
 
-## ⚠️ Security Note
+## 🛡️ Security Considerations
 
-This project is an educational prototype and is not intended for production use without additional hardening.
-
-Important considerations:
-- use strong, unique passwords
-- never store passwords in plaintext
-- use unique nonces for every encryption
-- validate input carefully
-- use secure storage for keys and metadata
-- do not use this project for sensitive or regulated data without a proper security review
+- **Password Strength:** CryptVault relies on user passwords for PBKDF2 key generation. Use complex passwords to prevent brute-force resistance.
+- **Integrity Validation:** If the encrypted payload is altered or an incorrect password is provided during decryption, the GCM tag validation will fail, protecting against ciphertext tampering.
 
 ---
 
-## 📌 Project Goals
+## 📜 License
 
-The goal of this project is to learn and practice:
-- authenticated encryption
-- key derivation
-- secure random generation
-- modern C++ programming
-- Windows-native development
-- GitHub project structure and documentation
-
----
-
-## 🤝 License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
----
-
-## 👨‍💻 Author
-
-GitHub: @yasincetin-it
-
----
-
-## 📝 Future Improvements
-
-Planned improvements include:
-- file encryption / decryption support
-- better password validation
-- structured project layout (src/include)
-- unit tests
-- stronger CLI validation
-- GUI or web-based frontend
-- CI/CD support
-- improved documentation and security guidelines
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
