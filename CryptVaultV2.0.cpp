@@ -20,7 +20,7 @@
 
 using namespace std;
 
-// AES-256-GCM configuration
+
 const int SALT_SIZE = 16;
 const int NONCE_SIZE = 12;
 const int KEY_SIZE = 32;
@@ -29,7 +29,7 @@ const int PBKDF2_ITERATIONS = 600000;
 
 const string MAGIC = "SC1";
 
-// Display CRYPTVAULT banner with GitHub username
+
 void showBanner() {
     cout << "\033[36m";
     cout << R"(
@@ -47,7 +47,7 @@ void showBanner() {
     cout << "\033[0m\n";
 }
 
-// Convert binary data to hexadecimal
+
 string toHex(const unsigned char* data, size_t length) {
     stringstream ss;
     ss << hex << uppercase << setfill('0');
@@ -59,7 +59,7 @@ string toHex(const unsigned char* data, size_t length) {
     return ss.str();
 }
 
-// Convert hexadecimal to binary
+
 bool fromHex(const string& hex, vector<unsigned char>& result) {
     string cleanHex;
 
@@ -101,7 +101,7 @@ bool fromHex(const string& hex, vector<unsigned char>& result) {
     return true;
 }
 
-// Derive a 256-bit encryption key from the password
+
 bool deriveKey(
     const string& password,
     const unsigned char* salt,
@@ -123,7 +123,7 @@ bool deriveKey(
     ) == 1;
 }
 
-// Encrypt using AES-256-GCM
+
 bool encryptMessage(
     const string& message,
     const string& password,
@@ -213,7 +213,7 @@ bool encryptMessage(
     }
 
     {
-        // Packet: magic + salt + nonce + ciphertext + tag
+        
         vector<unsigned char> packet;
 
         packet.insert(
@@ -255,7 +255,7 @@ cleanup:
     return success;
 }
 
-// Decrypt and authenticate using AES-256-GCM
+
 bool decryptMessage(
     const string& encryptedHex,
     const string& password,
@@ -360,7 +360,7 @@ bool decryptMessage(
             goto cleanup;
         }
 
-        // Authentication fails if the password or data is incorrect
+        
         if (EVP_DecryptFinal_ex(
             ctx,
             plaintext.data() + totalLength,
